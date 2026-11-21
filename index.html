@@ -1,396 +1,429 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!doctype html>
+<html lang="ar" dir="rtl" data-type="software" data-radius="soft" data-buttons="tonal" data-motion>
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>مِرساة | Mirsat — نظّم مهامك وعروضك وتابع تقدّم عملك</title>
-<meta name="description" content="مِرساة منصة تساعد أصحاب المشاريع على تنظيم المهام والعروض ومتابعة تقدم العمل بوضوح.">
+<title>مِرساة: إدارة المهام وعروض الأسعار للمشاريع الصغيرة</title>
+<meta name="description" content="برنامج يجمع مشاريعك ومهامها وعروض أسعارها في مكان واحد، مع نسبة إنجاز لكل مشروع وتذكير قبل كل موعد. تجربة مجانية 14 يومًا.">
+<meta name="page-type" content="software">
+<meta name="site-kind" content="software">
+<meta name="theme-color" content="#f8f8f8">
+<meta property="og:title" content="مِرساة: المهام وعروض الأسعار في مكان واحد">
+<meta property="og:description" content="وزّع المهام، أرسل عرض السعر لعميلك، وتابع نسبة الإنجاز لكل مشروع. من 49 ر.س شهريًا.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="share.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<!-- <link rel="canonical" href="https://mirsat.example/"> : add the real domain when there is one -->
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com/3.4.17"></script>
-<script>
-tailwind.config = {
-  theme: { extend: {
-    fontFamily: { sans: ['"IBM Plex Sans Arabic"', 'Tajawal', 'system-ui', 'sans-serif'] },
-    colors: { ink: '#1B1F4B', brand: '#5B4BDB', brand2: '#4338CA', mint: '#14B8A6', paper: '#F6F7FC', line: '#E3E5F3' }
-  } }
-}
-</script>
-<style>
-  html { scroll-behavior: smooth; scroll-padding-top: 5rem; color-scheme: light; }
-  body { background: #F6F7FC; color: #1B1F4B; }
-  :focus-visible { outline: 3px solid #5B4BDB; outline-offset: 3px; border-radius: 8px; }
-  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
-  .reveal.in { opacity: 1; transform: none; }
-  .card { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
-  .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -18px rgba(67,56,202,.35); border-color: #C9C3F5; }
-  .btn { transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease; }
-  .btn:hover { transform: translateY(-2px); }
-  .btn:active { transform: translateY(0) scale(.98); }
-  .faq-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
-  .faq-body > div { overflow: hidden; }
-  .faq-item[data-open="true"] .faq-body { grid-template-rows: 1fr; }
-  .faq-item[data-open="true"] .faq-icon { transform: rotate(45deg); }
-  .faq-icon { transition: transform .3s ease; }
-  /* hero progress bars fill once on load */
-  .bar { width: 0; transition: width 1.4s cubic-bezier(.2,.8,.2,1) .5s; }
-  .loaded .bar { width: var(--w); }
-  dialog { background: #FFFFFF; color: #1B1F4B; }
-  dialog input { background: #FFFFFF; color: #1B1F4B; }
-  dialog::backdrop { background: rgba(27,31,75,.55); backdrop-filter: blur(3px); }
-  dialog[open] { animation: pop .25s ease; }
-  @keyframes pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-    .reveal { opacity: 1; transform: none; }
-    .bar { width: var(--w); }
-  }
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500&family=Readex+Pro:wght@400..600&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="assets/moments/moments.js">
+<link rel="modulepreload" href="assets/moments/lib.js">
 </head>
-<body class="font-sans antialiased">
-
-<!-- Navbar -->
-<header class="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur">
-  <nav class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5" aria-label="التنقل الرئيسي">
-    <a href="#top" class="flex items-center gap-2.5 text-xl font-bold">
-      <span class="grid h-9 w-9 place-items-center rounded-xl bg-ink text-white" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5"/><path d="M12 7.5V21M8 11h8M4 14a8 8 0 0 0 16 0"/></svg>
-      </span>
-      <span>مِرساة <span class="text-sm font-medium text-ink/50" dir="ltr">Mirsat</span></span>
+<body>
+<!--
+  kind: software (a SaaS app for small businesses)
+  deal: hero collage · palette mint-pink-accounts (2nd of three: the 1st, card-pastels, puts a pink action
+  colour against the mint the brand already uses for progress and approval) · type: the dealt Funnel/Outfit
+  cannot set Arabic, so Readex Pro (display) + IBM Plex Sans Arabic (text, the client's own face) ·
+  nav-centre (re-dealt: nav-mega needs 6-12 feature pages) · footer-statement + close-word · rhythm
+  surface-pairs · buttons tonal · mark: the client's anchor logo · moment: line-carries-colour on #how
+  (re-dealt: counter-rolls needs proof figures the brief does not give) · effect: none (the hero frame is a
+  CSS lit ground).
+  WhatsApp: every wa.me link uses 966500000000, a stand-in. Replace it everywhere with the real number
+  (international format, no +), and hello@mirsat.example with the real address.
+-->
+<header class="nav" id="nav">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+    <a class="nav__logo" href="#top" aria-label="مِرساة، الصفحة الرئيسية">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5"/><path d="M12 7.5V21M8 11h8M4 14a8 8 0 0 0 16 0"/></svg></span>
+      <span>مِرساة</span>
     </a>
-    <ul class="hidden items-center gap-8 text-[15px] font-medium text-ink/75 md:flex">
-      <li><a class="hover:text-brand" href="#features">المزايا</a></li>
-      <li><a class="hover:text-brand" href="#how">كيف يعمل</a></li>
-      <li><a class="hover:text-brand" href="#pricing">الباقات</a></li>
-      <li><a class="hover:text-brand" href="#faq">الأسئلة الشائعة</a></li>
-    </ul>
-    <div class="flex items-center gap-2">
-      <button data-open-modal class="btn hidden rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand/25 hover:bg-brand2 sm:block">اطلب نسختك</button>
-      <button id="menuBtn" class="grid h-10 w-10 place-items-center rounded-xl border border-line md:hidden" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mobileMenu">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <nav class="nav__links" id="nav-links" aria-label="أقسام الصفحة">
+      <a class="nav__link" href="#features">المزايا</a>
+      <a class="nav__link" href="#pricing">الباقات</a>
+      <a class="nav__link" href="#how">البداية</a>
+      <a class="nav__link" href="#faq">الأسئلة</a>
+      <a class="btn btn--primary nav__sheet-cta" href="https://wa.me/966500000000" data-wa="trial">ابدأ تجربتك المجانية</a>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="https://wa.me/966500000000" data-wa="trial">ابدأ تجربتك المجانية</a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="القائمة">
+        <svg class="i-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
     </div>
-  </nav>
-  <div id="mobileMenu" class="hidden border-t border-line bg-paper px-5 pb-5 md:hidden">
-    <ul class="flex flex-col py-2 text-base font-medium">
-      <li><a class="block py-3" href="#features">المزايا</a></li>
-      <li><a class="block py-3" href="#how">كيف يعمل</a></li>
-      <li><a class="block py-3" href="#pricing">الباقات</a></li>
-      <li><a class="block py-3" href="#faq">الأسئلة الشائعة</a></li>
-    </ul>
-    <button data-open-modal class="btn w-full rounded-xl bg-brand px-5 py-3 font-semibold text-white">اطلب نسختك</button>
   </div>
 </header>
 
-<main id="top">
+<main id="main">
 
-<!-- Hero -->
-<section class="relative overflow-hidden">
-  <div class="pointer-events-none absolute -top-40 start-[-10%] h-96 w-96 rounded-full bg-brand/10 blur-3xl"></div>
-  <div class="mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-14 lg:grid-cols-[1.05fr_1fr] lg:pt-20">
+<!-- hero: collage -->
+<section class="hero" id="top" data-enter aria-labelledby="hero-h">
+  <div class="wrap grid">
+    <div class="hero-text">
+      <h1 id="hero-h">إدارة المهام وعروض الأسعار للمشاريع الصغيرة</h1>
+      <p class="hero__lead">مِرساة تجمع مشاريعك ومهامها وعروض أسعارها في شاشة واحدة، فتعرف أين وصل كل عمل ومن المسؤول عن الخطوة التالية.</p>
+      <div class="btn-row">
+        <a class="btn btn--primary" href="https://wa.me/966500000000" data-wa="trial">ابدأ تجربتك المجانية</a>
+        <a class="btn btn--secondary" href="#app">شاهد البرنامج</a>
+      </div>
+      <p class="hero__proof">14 يومًا مجانًا بدون بطاقة ائتمانية. الباقات من 49 ر.س شهريًا.</p>
+    </div>
+
+    <div class="hero__art" data-enter-media>
+      <div class="win ui" role="img" aria-label="شاشة مهام اليوم في مِرساة: عشر مهام من مشاريع مختلفة، لكل مهمة مشروعها وحالتها">
+        <div class="win__bar"><span class="win__dots"><i></i><i></i><i></i></span><span class="win__title">مهام اليوم</span></div>
+        <div class="win__body">
+          <div class="win__side"><span>المشاريع</span><span class="is-on">مهام اليوم</span><span>العروض</span><span>العملاء</span><span>التقارير</span></div>
+          <div class="win__main">
+            <div class="win__head"><b>مهام اليوم</b><span class="muted">10 مهام</span></div>
+            <ul class="rows">
+              <li><span class="box"></span><span><span class="who">مراجعة عرض السعر مع العميل</span><span class="sub">إطلاق المتجر الإلكتروني</span></span><span class="chip chip--now">الآن</span></li>
+              <li><span class="box"></span><span><span class="who">رفع صور المنتجات</span><span class="sub">تصوير منتجات</span></span><span class="chip">قيد العمل</span></li>
+              <li><span class="box is-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span><span class="who">تسليم الشعار النهائي</span><span class="sub">هوية مطعم شعبي</span></span><span class="chip chip--done">مكتملة</span></li>
+              <li><span class="box"></span><span><span class="who">اتصال متابعة مع العيادة</span><span class="sub">موقع عيادة أسنان</span></span><span class="chip chip--late">متأخرة يومين</span></li>
+              <li><span class="box"></span><span><span class="who">إضافة 12 صفحة منتج</span><span class="sub">إطلاق المتجر الإلكتروني</span></span><span class="chip">قيد العمل</span></li>
+              <li><span class="box"></span><span><span class="who">جدولة منشورات الأسبوع</span><span class="sub">حسابات مخبز الحي</span></span><span class="chip">لم تبدأ</span></li>
+              <li><span class="box"></span><span><span class="who">تجهيز ملف الألوان</span><span class="sub">هوية مطعم شعبي</span></span><span class="chip">لم تبدأ</span></li>
+              <li><span class="box"></span><span><span class="who">تعديل صفحة الحجز</span><span class="sub">تطبيق حجوزات صالون</span></span><span class="chip">قيد العمل</span></li>
+              <li><span class="box"></span><span><span class="who">إرسال مسودة الكتالوج</span><span class="sub">كتالوج منتجات</span></span><span class="chip">لم تبدأ</span></li>
+              <li><span class="box"></span><span><span class="who">قائمة لقطات التصوير</span><span class="sub">تصوير منتجات</span></span><span class="chip">لم تبدأ</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="qcard ui" data-m-loop role="img" aria-label="عرض السعر رقم 1042 بقيمة 7,800 ريال: أُرسل للعميل، وفتحه، ووافق عليه">
+        <div class="qcard__head">
+          <img src="assets/icons/pdf.svg" alt="">
+          <span><b>عرض سعر 1042</b><span class="muted">متجر قهوة</span></span>
+          <span class="qcard__amount num">7,800 ر.س</span>
+        </div>
+        <ol class="qsteps">
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>أُرسل للعميل</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>فتح العميل العرض</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>وافق العميل على العرض</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- app-frame: the product, big -->
+<section id="app" aria-labelledby="app-h">
+  <div class="wrap">
+    <div class="grid app-head">
+      <h2 id="app-h">كل مشروع بمهامه وعرض سعره في مكان واحد</h2>
+      <div class="app-head__text">
+        <p>اختر المشروع من القائمة، فتظهر مهامه بأسماء المسؤولين ومواعيد التسليم، ونسبة الإنجاز، وعرض السعر الذي وصل للعميل وحالته.</p>
+        <a class="link" href="#pricing">شاهد الباقات</a>
+      </div>
+    </div>
+    <div class="app ui" role="img" aria-label="نافذة مِرساة: قائمة تسعة مشاريع، وبجانبها مشروع إطلاق المتجر الإلكتروني مفتوحًا بمهامه ونسبة إنجازه 72% وعرض سعره المعتمد">
+      <div class="app__pane app__pane--list">
+        <div class="win__bar"><span class="win__dots"><i></i><i></i><i></i></span><span class="win__title">المشاريع</span></div>
+        <div class="win__body">
+          <div class="win__side"><span class="is-on">المشاريع</span><span>مهام اليوم</span><span>العروض</span><span>العملاء</span><span>التقارير</span></div>
+          <ul class="plist">
+            <li class="plist__head" style="display:flex"><b>المشاريع</b><span class="muted">9 نشطة</span></li>
+            <li class="is-open"><span class="who">إطلاق المتجر الإلكتروني</span><span class="chip">على المسار</span><span class="sub">متجر قهوة · باقي 11 يومًا</span><span class="pct num">72%</span></li>
+            <li><span class="who">موقع عيادة أسنان</span><span class="chip chip--late">متأخر</span><span class="sub">عيادة · باقي 3 أيام</span><span class="pct num">40%</span></li>
+            <li><span class="who">هوية مطعم شعبي</span><span class="chip chip--done">مكتمل</span><span class="sub">مطعم · سُلِّم</span><span class="pct num">100%</span></li>
+            <li><span class="who">حملة رمضان</span><span class="chip">على المسار</span><span class="sub">محل عطور · باقي 40 يومًا</span><span class="pct num">15%</span></li>
+            <li><span class="who">تطبيق حجوزات صالون</span><span class="chip">على المسار</span><span class="sub">صالون · باقي 26 يومًا</span><span class="pct num">58%</span></li>
+            <li><span class="who">كتالوج منتجات</span><span class="chip">بانتظار العميل</span><span class="sub">مصنع أثاث · باقي 19 يومًا</span><span class="pct num">30%</span></li>
+            <li><span class="who">تصوير منتجات</span><span class="chip">على المسار</span><span class="sub">متجر ملابس · باقي 5 أيام</span><span class="pct num">85%</span></li>
+            <li><span class="who">حسابات مخبز الحي</span><span class="chip">على المسار</span><span class="sub">مخبز · شهري</span><span class="pct num">64%</span></li>
+            <li><span class="who">موقع شركة مقاولات</span><span class="chip">لم يبدأ</span><span class="sub">مقاولات · يبدأ الأحد</span><span class="pct num">0%</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="app__pane app__pane--open">
+        <div class="pview" data-m-loop>
+          <div class="pview__top">
+            <div><b>إطلاق المتجر الإلكتروني</b><div class="pview__meta"><span>العميل: متجر قهوة</span><span>التسليم بعد 11 يومًا</span><span>8 مهام</span></div></div>
+            <span class="chip">على المسار</span>
+          </div>
+          <div class="pview__progress">
+            <span class="muted">نسبة الإنجاز</span>
+            <div class="bar bar--accent"><i style="--v:.72"></i></div>
+            <span class="pview__pct num"><span class="swap"><span>66%</span><span>72%</span></span></span>
+          </div>
+          <ul class="ptasks">
+            <li><span class="box is-done"><svg class="tk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span>تصميم الهوية</span><span class="av">م</span><span class="when">سُلِّمت</span><span class="chip chip--done">مكتملة</span></li>
+            <li><span class="box is-done"><svg class="tk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span>عرض السعر للعميل</span><span class="av">أ</span><span class="when">سُلِّمت</span><span class="chip chip--done">مكتملة</span></li>
+            <li class="loop-task"><span class="box"><svg class="tk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span>كتابة وصف المنتجات</span><span class="av">ف</span><span class="when">اليوم</span><span class="swap"><span class="chip">قيد العمل</span><span class="chip chip--done">مكتملة</span></span></li>
+            <li><span class="box"></span><span>تجهيز صفحات المنتجات</span><span class="av">ف</span><span class="when">بعد يومين</span><span class="chip">قيد العمل</span></li>
+            <li><span class="box"></span><span>تصوير المنتجات</span><span class="av">ر</span><span class="when">بعد 4 أيام</span><span class="chip">قيد العمل</span></li>
+            <li><span class="box"></span><span>ربط بوابة الدفع</span><span class="av">أ</span><span class="when">بعد 7 أيام</span><span class="chip">لم تبدأ</span></li>
+            <li><span class="box"></span><span>تجربة الطلب كاملًا</span><span class="av">م</span><span class="when">بعد 9 أيام</span><span class="chip">لم تبدأ</span></li>
+            <li><span class="box"></span><span>مراجعة نهائية مع العميل</span><span class="av">أ</span><span class="when">بعد 11 يومًا</span><span class="chip">لم تبدأ</span></li>
+          </ul>
+          <div class="pquote">
+            <img src="assets/icons/pdf.svg" alt="">
+            <span><b>عرض سعر 1042</b> <span class="muted num">· 7,800 ر.س</span></span>
+            <span class="when muted">قبل 3 أيام</span>
+            <span class="chip chip--done">وافق العميل</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- features-2x2 in two screens -->
+<section id="features" aria-labelledby="features-h">
+  <div class="wrap g2">
     <div>
-      <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-1.5 text-sm font-medium text-ink/70">
-        <span class="h-2 w-2 rounded-full bg-mint"></span> مصمّمة لأصحاب المشاريع الصغيرة والمتوسطة
-      </p>
-      <h1 class="text-4xl font-bold leading-[1.35] sm:text-5xl lg:text-[3.4rem]">ثبّت أولوياتك، وأبحر بمشروعك بثقة نحو هدفك</h1>
-      <p class="mt-6 max-w-xl text-lg leading-8 text-ink/70">مِرساة تجمع مهامك وعروضك ومتابعة التقدّم في مكان واحد، فتعرف دائمًا أين وصل كل عمل وما الخطوة التالية.</p>
-      <div class="mt-9 flex flex-wrap items-center gap-3">
-        <button data-open-modal class="btn rounded-xl bg-brand px-7 py-3.5 font-semibold text-white shadow-xl shadow-brand/30 hover:bg-brand2">اطلب نسختك</button>
-        <a href="#how" class="btn rounded-xl border border-line bg-white px-7 py-3.5 font-semibold hover:border-brand/40">شاهد كيف يعمل</a>
+      <div class="section-head">
+        <h2 id="features-h">أدوات مِرساة الأربع. <span class="muted">مهام، وعروض أسعار، ونسبة إنجاز، وتذكيرات.</span></h2>
       </div>
-      <p class="mt-6 text-sm text-ink/55">بدون بطاقة ائتمانية. تجربة مجانية لمدة 14 يومًا.</p>
+      <div class="grid cards">
+        <article class="card span-6 m-nolift">
+          <h3>توزّع المهام على فريقك</h3>
+          <p>لكل مهمة مسؤول وموعد تسليم وأولوية، وتظهر مهام اليوم أولًا عند كل عضو.</p>
+          <div class="panel panel--mint">
+            <div class="frag frag--rise ui assign" data-m-loop role="img" aria-label="مهمة تجهيز صفحات المنتجات، وقائمة لاختيار المسؤول عنها">
+              <div class="frag__head"><b>تجهيز صفحات المنتجات</b><span class="who-swap swap"><span class="chip">بدون مسؤول</span><span class="chip chip--done">فهد · مطوّر</span></span></div>
+              <div class="frag__body"><span class="muted">أسند المهمة إلى</span></div>
+              <ul class="assign__pick">
+                <li><span class="av">م</span><span>مها</span><span class="role">مصممة</span></li>
+                <li><span class="av">ف</span><span>فهد</span><span class="role">مطوّر</span></li>
+                <li><span class="av">ر</span><span>ريان</span><span class="role">مصوّر</span></li>
+                <li><span class="av">أ</span><span>أنت</span><span class="role">مدير المشروع</span></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+        <article class="card span-6 m-nolift">
+          <h3>تجهّز عرض السعر من قالب</h3>
+          <p>اختر القالب وأضف البنود والأسعار، ويخرج العرض بشعارك وألوانك جاهزًا لعميلك.</p>
+          <div class="panel panel--sand">
+            <div class="frag frag--corner ui" role="img" aria-label="عرض سعر رقم 1042 بثلاثة بنود وإجمالي 7,800 ريال">
+              <div class="frag__head"><span style="display:flex;gap:10px;align-items:center"><img src="assets/icons/pdf.svg" alt="" width="24" height="24"><b>عرض سعر 1042</b></span><span class="muted">متجر قهوة</span></div>
+              <div class="frag__body">
+                <ul class="doc-lines">
+                  <li><span>تصميم واجهة المتجر</span><span class="num">3,600 ر.س</span></li>
+                  <li><span>برمجة 12 صفحة منتج</span><span class="num">2,800 ر.س</span></li>
+                  <li><span>ربط بوابة الدفع</span><span class="num">1,400 ر.س</span></li>
+                </ul>
+                <div class="doc-total"><span>الإجمالي</span><b class="num">7,800 ر.س</b></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
     </div>
+    <div class="grid cards cards--second">
+      <article class="card span-6 m-nolift">
+        <h3>تحسب نسبة الإنجاز لكل مشروع</h3>
+        <p>كل مهمة تنتهي ترفع النسبة، فتعرف ما أُنجز وما تبقّى بنظرة واحدة.</p>
+        <div class="panel panel--sky">
+          <div class="frag frag--rise ui" role="img" aria-label="نسبة الإنجاز لثلاثة مشاريع: 72% و40% و85%">
+            <div class="frag__head"><b>التقدّم هذا الأسبوع</b><span class="muted">3 مشاريع</span></div>
+            <div class="frag__body">
+              <ul class="pbars">
+                <li class="is-key"><div><span>إطلاق المتجر الإلكتروني</span><span class="num">72%</span></div><div class="bar"><i style="--v:.72"></i></div></li>
+                <li><div><span>موقع عيادة أسنان</span><span class="num">40%</span></div><div class="bar"><i style="--v:.40"></i></div></li>
+                <li><div><span>تصوير منتجات</span><span class="num">85%</span></div><div class="bar"><i style="--v:.85"></i></div></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+      <article class="card span-6 m-nolift">
+        <h3>تذكّرك قبل موعد التسليم</h3>
+        <p>تنبيه قبل كل موعد مهم، حتى لا يفوتك تسليم ولا متابعة مع عميل.</p>
+        <div class="panel panel--pink">
+          <div class="frag frag--rise ui" role="img" aria-label="ثلاثة تنبيهات: تسليم صفحات المنتجات غدًا، والعميل فتح عرض السعر، ومتابعة متأخرة يومين">
+            <ul class="notes">
+              <li><span class="n-ic is-key"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"/></svg></span><span><b>تسليم صفحات المنتجات غدًا</b><span class="sub">إطلاق المتجر الإلكتروني · 10:00 ص</span></span><span class="when">الآن</span></li>
+              <li><span class="n-ic"><img src="assets/icons/pdf.svg" alt="" width="18" height="18"></span><span><b>العميل فتح عرض السعر 1042</b><span class="sub">متجر قهوة</span></span><span class="when">قبل ساعة</span></li>
+              <li><span class="n-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><b>متابعة متأخرة يومين</b><span class="sub">موقع عيادة أسنان</span></span><span class="when">أمس</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
 
-    <!-- Product preview (static demo, no real data) -->
-    <div class="relative mx-auto w-full max-w-lg" aria-label="معاينة توضيحية لواجهة المنتج" role="img">
-      <div class="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-brand/20 to-mint/20 blur-2xl"></div>
-      <div class="relative rounded-3xl border border-line bg-white p-5 shadow-2xl shadow-ink/10">
-        <div class="mb-4 flex items-center justify-between">
-          <div>
-            <p class="text-sm text-ink/50">مشروع تجريبي</p>
-            <p class="text-lg font-bold">إطلاق المتجر الإلكتروني</p>
-          </div>
-          <span class="rounded-full bg-mint/15 px-3 py-1 text-xs font-semibold text-teal-700">على المسار</span>
-        </div>
-        <div class="mb-5 rounded-2xl bg-ink p-4 text-white">
-          <div class="mb-2 flex items-end justify-between">
-            <span class="text-sm text-white/70">التقدّم الكلي</span>
-            <span class="text-2xl font-bold" dir="ltr">72%</span>
-          </div>
-          <div class="h-2.5 overflow-hidden rounded-full bg-white/15"><div class="bar h-full rounded-full bg-mint" style="--w:72%"></div></div>
-        </div>
-        <ul class="space-y-3">
-          <li class="rounded-2xl border border-line p-3.5">
-            <div class="mb-2 flex items-center justify-between text-sm"><span class="font-semibold">تصميم الهوية</span><span class="text-ink/50" dir="ltr">100%</span></div>
-            <div class="h-1.5 rounded-full bg-line"><div class="bar h-full rounded-full bg-mint" style="--w:100%"></div></div>
-          </li>
-          <li class="rounded-2xl border border-line p-3.5">
-            <div class="mb-2 flex items-center justify-between text-sm"><span class="font-semibold">عرض السعر للعميل</span><span class="text-ink/50" dir="ltr">80%</span></div>
-            <div class="h-1.5 rounded-full bg-line"><div class="bar h-full rounded-full bg-brand" style="--w:80%"></div></div>
-          </li>
-          <li class="rounded-2xl border border-line p-3.5">
-            <div class="mb-2 flex items-center justify-between text-sm"><span class="font-semibold">تجهيز صفحات المنتجات</span><span class="text-ink/50" dir="ltr">45%</span></div>
-            <div class="h-1.5 rounded-full bg-line"><div class="bar h-full rounded-full bg-brand" style="--w:45%"></div></div>
-          </li>
+<!-- pricing-three on the surface ground -->
+<section id="pricing" class="ground-surface" aria-labelledby="pricing-h">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="pricing-h">الباقات والأسعار</h2>
+      <p>جرّب أي باقة 14 يومًا مجانًا، وغيّرها متى شئت.</p>
+    </div>
+    <div class="grid plans">
+      <article class="plan span-4">
+        <div class="plan__name"><h3>الأساسية</h3></div>
+        <p class="plan__for">للعمل الفردي</p>
+        <p class="price"><b class="num">49</b><span>ر.س شهريًا</span></p>
+        <a class="btn btn--secondary" href="https://wa.me/966500000000" data-wa="basic">ابدأ بالأساسية</a>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>5 مشاريع نشطة</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>إدارة المهام والتذكيرات</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>10 عروض أسعار في الشهر</li>
         </ul>
-        <div class="absolute -bottom-5 end-6 flex items-center gap-2 rounded-2xl border border-line bg-white px-4 py-2.5 text-sm font-semibold shadow-lg">
-          <span class="grid h-6 w-6 place-items-center rounded-full bg-mint text-white"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
-          تمت الموافقة على العرض
+      </article>
+      <article class="plan span-4 is-featured">
+        <div class="plan__name"><h3>الاحترافية</h3><span class="badge">الأكثر طلبًا</span></div>
+        <p class="plan__for">للمستقلين والمشاريع النامية</p>
+        <p class="price"><b class="num">99</b><span>ر.س شهريًا</span></p>
+        <a class="btn btn--primary" href="https://wa.me/966500000000" data-wa="pro">ابدأ بالاحترافية</a>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>مشاريع غير محدودة</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>عروض أسعار بشعارك وألوانك</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>تقارير تقدّم لكل عميل</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>دعم عبر واتساب</li>
+        </ul>
+      </article>
+      <article class="plan span-4">
+        <div class="plan__name"><h3>الأعمال</h3></div>
+        <p class="plan__for">للفرق والشركات</p>
+        <p class="price"><b class="num">249</b><span>ر.س شهريًا</span></p>
+        <a class="btn btn--secondary" href="https://wa.me/966500000000" data-wa="biz">تواصل لباقة الأعمال</a>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>حتى 15 عضوًا في الفريق</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>صلاحيات وأدوار مخصّصة</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>مساعدة في نقل بياناتك</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- steps on the mint ground; the dealt moment: line-carries-colour -->
+<section id="how" class="ground-mint" data-moment="line-carries-colour" data-moment-opts='{"from": "surface"}' aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="how-h">ابدأ مع مِرساة في 3 خطوات</h2>
+      <p>لا تحتاج تدريبًا، ومشروعك الأول يجهز في دقائق.</p>
+    </div>
+    <div class="grid cards">
+      <article class="card span-4 m-nolift">
+        <span class="step-num">1</span>
+        <h3>أنشئ المشروع</h3>
+        <p>اكتب اسمه، واختر العميل، وحدّد تاريخ التسليم.</p>
+        <div class="panel">
+          <div class="frag frag--rise ui" role="img" aria-label="نموذج مشروع جديد: الاسم والعميل وتاريخ التسليم">
+            <div class="mform">
+              <label>اسم المشروع<span class="fld">إطلاق المتجر الإلكتروني</span></label>
+              <label>العميل<span class="fld">متجر قهوة</span></label>
+              <label>التسليم<span class="fld">بعد 30 يومًا</span></label>
+              <span class="fbtn">إنشاء المشروع</span>
+            </div>
+          </div>
+        </div>
+      </article>
+      <article class="card span-4 m-nolift">
+        <span class="step-num">2</span>
+        <h3>قسّم العمل إلى مهام</h3>
+        <p>أضف المهام وأسند كل واحدة لنفسك أو لأحد فريقك.</p>
+        <div class="panel">
+          <div class="frag frag--rise ui" role="img" aria-label="أربع مهام، لكل واحدة مسؤول">
+            <ul class="rows" style="padding:4px 16px">
+              <li style="padding-inline-end:0;grid-template-columns:18px minmax(0,1fr) auto"><span class="box is-done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span class="who">تصميم الهوية</span><span class="av">م</span></li>
+              <li style="padding-inline-end:0;grid-template-columns:18px minmax(0,1fr) auto"><span class="box"></span><span class="who">تجهيز صفحات المنتجات</span><span class="av">ف</span></li>
+              <li style="padding-inline-end:0;grid-template-columns:18px minmax(0,1fr) auto"><span class="box"></span><span class="who">تصوير المنتجات</span><span class="av">ر</span></li>
+              <li style="padding-inline-end:0;grid-template-columns:18px minmax(0,1fr) auto"><span class="box"></span><span class="who">ربط بوابة الدفع</span><span class="av">أ</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+      <article class="card span-4 m-nolift">
+        <span class="step-num">3</span>
+        <h3>أرسل العرض وتابع التقدّم</h3>
+        <p>أرسل عرض السعر لعميلك، وتابع النسبة حتى التسليم.</p>
+        <div class="panel">
+          <div class="frag frag--rise ui" role="img" aria-label="عرض السعر أُرسل للعميل ووافق عليه، ونسبة الإنجاز 72%">
+            <div class="sent">
+              <div class="sent__row"><span style="display:flex;gap:10px;align-items:center"><img src="assets/icons/pdf.svg" alt="" width="24" height="24"><b>عرض سعر 1042</b></span><span class="chip chip--done">وافق العميل</span></div>
+              <div class="sent__row"><span class="muted">نسبة الإنجاز</span><span class="num" style="font-weight:500">72%</span></div>
+              <div class="bar bar--accent"><i style="--v:.72"></i></div>
+              <div class="sent__row"><span class="muted">التسليم</span><span>بعد 11 يومًا</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- faq: every answer open -->
+<section id="faq" aria-labelledby="faq-h">
+  <div class="wrap grid faq-split">
+    <div class="faq-side">
+      <h2 id="faq-h">أسئلة شائعة</h2>
+      <p>ما تحتاج تعرفه قبل الاشتراك. وإذا عندك سؤال غيرها، راسلنا على واتساب.</p>
+      <a class="link" href="https://wa.me/966500000000" data-wa="help"><img class="ic" src="assets/icons/whatsapp.svg" alt="" width="20" height="20">تواصل معنا عبر واتساب</a>
+      <div class="chat frag ui" style="position:static" role="img" aria-label="محادثة واتساب: عميل يسأل عن نقل مشاريعه، والدعم يرد بأن نقل البيانات ضمن باقة الأعمال">
+        <div class="chat__head"><img src="assets/icons/whatsapp.svg" alt=""><span><b>دعم مِرساة</b><span class="muted">واتساب</span></span></div>
+        <div class="chat__body">
+          <p class="bubble bubble--them">مشاريعي الحالية في جدول، تقدرون تنقلونها؟<span class="t">10:12 ص</span></p>
+          <p class="bubble bubble--me">نعم، نساعدك في نقل بياناتك ضمن باقة الأعمال.<span class="t">10:20 ص</span></p>
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- Features -->
-<section id="features" class="mx-auto max-w-6xl px-5 py-20">
-  <div class="reveal max-w-2xl">
-    <h2 class="text-3xl font-bold leading-snug sm:text-4xl">كل ما تحتاجه لتدير عملك دون تشتّت</h2>
-    <p class="mt-4 text-lg leading-8 text-ink/65">أربع أدوات أساسية، مصمّمة لتُستخدم يوميًا دون تعقيد.</p>
-  </div>
-  <div class="mt-12 grid gap-5 lg:grid-cols-6">
-    <article class="reveal card rounded-3xl border border-line bg-white p-7 lg:col-span-4">
-      <span class="grid h-12 w-12 place-items-center rounded-2xl bg-brand/10 text-brand"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg></span>
-      <h3 class="mt-5 text-xl font-bold">إدارة المهام</h3>
-      <p class="mt-2 max-w-lg leading-8 text-ink/65">أضف المهام، حدّد المسؤول والموعد النهائي، ورتّبها حسب الأولوية. تظهر لك مهام اليوم أولًا.</p>
-    </article>
-    <article class="reveal card rounded-3xl border border-line bg-white p-7 lg:col-span-2">
-      <span class="grid h-12 w-12 place-items-center rounded-2xl bg-mint/15 text-teal-700"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/></svg></span>
-      <h3 class="mt-5 text-xl font-bold">عروض أسعار جاهزة</h3>
-      <p class="mt-2 leading-8 text-ink/65">أنشئ عرضًا منسّقًا من قالب جاهز وأرسله لعميلك.</p>
-    </article>
-    <article class="reveal card rounded-3xl border border-line bg-white p-7 lg:col-span-2">
-      <span class="grid h-12 w-12 place-items-center rounded-2xl bg-brand/10 text-brand"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
-      <h3 class="mt-5 text-xl font-bold">متابعة التقدّم</h3>
-      <p class="mt-2 leading-8 text-ink/65">شريط تقدّم لكل مشروع يوضّح ما أُنجز وما تبقّى.</p>
-    </article>
-    <article class="reveal card rounded-3xl border border-line bg-white p-7 lg:col-span-4">
-      <span class="grid h-12 w-12 place-items-center rounded-2xl bg-mint/15 text-teal-700"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"/></svg></span>
-      <h3 class="mt-5 text-xl font-bold">تذكيرات ذكية</h3>
-      <p class="mt-2 max-w-lg leading-8 text-ink/65">تنبيهات قبل المواعيد المهمة، حتى لا يفوتك تسليم ولا متابعة مع عميل.</p>
-    </article>
-  </div>
-</section>
-
-<!-- How it works (a true sequence) -->
-<section id="how" class="bg-ink py-20 text-white">
-  <div class="mx-auto max-w-6xl px-5">
-    <div class="reveal max-w-2xl">
-      <h2 class="text-3xl font-bold leading-snug sm:text-4xl">ثلاث خطوات وتبدأ</h2>
-      <p class="mt-4 text-lg leading-8 text-white/70">لا تحتاج إلى تدريب. أنشئ مشروعك الأول في دقائق.</p>
-    </div>
-    <ol class="mt-12 grid gap-5 md:grid-cols-3">
-      <li class="reveal rounded-3xl border border-white/10 bg-white/5 p-7">
-        <span class="grid h-10 w-10 place-items-center rounded-full bg-mint font-bold text-ink">1</span>
-        <h3 class="mt-5 text-xl font-bold">أنشئ مشروعك</h3>
-        <p class="mt-2 leading-8 text-white/70">اكتب اسم المشروع واختر العميل وحدّد تاريخ التسليم.</p>
-      </li>
-      <li class="reveal rounded-3xl border border-white/10 bg-white/5 p-7">
-        <span class="grid h-10 w-10 place-items-center rounded-full bg-mint font-bold text-ink">2</span>
-        <h3 class="mt-5 text-xl font-bold">وزّع المهام</h3>
-        <p class="mt-2 leading-8 text-white/70">قسّم العمل إلى مهام صغيرة، وأسندها لنفسك أو لفريقك.</p>
-      </li>
-      <li class="reveal rounded-3xl border border-white/10 bg-white/5 p-7">
-        <span class="grid h-10 w-10 place-items-center rounded-full bg-mint font-bold text-ink">3</span>
-        <h3 class="mt-5 text-xl font-bold">تابع وأرسل العرض</h3>
-        <p class="mt-2 leading-8 text-white/70">راقب التقدّم، وأرسل العرض النهائي لعميلك عند الجاهزية.</p>
-      </li>
-    </ol>
-  </div>
-</section>
-
-<!-- Pricing -->
-<section id="pricing" class="mx-auto max-w-6xl px-5 py-20">
-  <div class="reveal mx-auto max-w-2xl text-center">
-    <h2 class="text-3xl font-bold leading-snug sm:text-4xl">باقات بسيطة تنمو معك</h2>
-    <p class="mt-4 text-lg leading-8 text-ink/65">اختر الباقة المناسبة اليوم، وغيّرها متى شئت. الأسعار توضيحية للعرض.</p>
-  </div>
-  <div class="mt-14 grid items-stretch gap-6 lg:grid-cols-3">
-    <article class="reveal card flex flex-col rounded-3xl border border-line bg-white p-8">
-      <h3 class="text-xl font-bold">أساسية</h3>
-      <p class="mt-1 text-ink/60">للعمل الفردي</p>
-      <p class="mt-6"><span class="text-4xl font-bold">49</span> <span class="text-ink/60">ر.س / شهريًا</span></p>
-      <ul class="mt-6 flex-1 space-y-3 text-ink/80">
-        <li class="flex gap-2"><span class="text-mint">✓</span> 5 مشاريع نشطة</li>
-        <li class="flex gap-2"><span class="text-mint">✓</span> إدارة المهام والتذكيرات</li>
-        <li class="flex gap-2"><span class="text-mint">✓</span> 10 عروض أسعار شهريًا</li>
-      </ul>
-      <button data-plan="الأساسية" class="btn wa mt-8 w-full rounded-xl border border-brand px-5 py-3 font-semibold text-brand hover:bg-brand/5">اطلب عبر واتساب</button>
-    </article>
-
-    <article class="reveal card relative flex flex-col rounded-3xl border-2 border-brand bg-white p-8 shadow-xl shadow-brand/15 lg:-my-4 lg:py-12">
-      <span class="absolute -top-3.5 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 rounded-full bg-brand px-4 py-1 text-sm font-semibold text-white">الأكثر طلبًا</span>
-      <h3 class="text-xl font-bold">احترافية</h3>
-      <p class="mt-1 text-ink/60">للمستقلين والمشاريع النامية</p>
-      <p class="mt-6"><span class="text-4xl font-bold">99</span> <span class="text-ink/60">ر.س / شهريًا</span></p>
-      <ul class="mt-6 flex-1 space-y-3 text-ink/80">
-        <li class="flex gap-2"><span class="text-mint">✓</span> مشاريع غير محدودة</li>
-        <li class="flex gap-2"><span class="text-mint">✓</span> عروض أسعار بشعارك وألوانك</li>
-        <li class="flex gap-2"><span class="text-mint">✓</span> تقارير تقدّم لكل عميل</li>
-        <li class="flex gap-2"><span class="text-mint">✓</span> دعم عبر واتساب</li>
-      </ul>
-      <button data-plan="الاحترافية" class="btn wa mt-8 w-full rounded-xl bg-brand px-5 py-3 font-semibold text-white shadow-lg shadow-brand/30 hover:bg-brand2">اطلب عبر واتساب</button>
-    </article>
-
-    <article class="reveal card flex flex-col rounded-3xl border border-line bg-white p-8">
-      <h3 class="text-xl font-bold">أعمال</h3>
-      <p class="mt-1 text-ink/60">للفرق والشركات</p>
-      <p class="mt-6"><span class="text-4xl font-bold">249</span> <span class="text-ink/60">ر.س / شهريًا</span></p>
-      <ul class="mt-6 flex-1 space-y-3 text-ink/80">
-        <li class="flex gap-2"><span class="text-mint">✓</span> حتى 15 عضوًا في الفريق</li>
-        <li class="flex gap-2"><span class="text-mint">✓</span> صلاحيات وأدوار مخصّصة</li>
-        <li class="flex gap-2"><span class="text-mint">✓</span> مساعدة في نقل بياناتك</li>
-      </ul>
-      <button data-plan="الأعمال" class="btn wa mt-8 w-full rounded-xl border border-brand px-5 py-3 font-semibold text-brand hover:bg-brand/5">اطلب عبر واتساب</button>
-    </article>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section id="faq" class="mx-auto max-w-3xl px-5 pb-24">
-  <h2 class="reveal text-center text-3xl font-bold sm:text-4xl">أسئلة يطرحها أصحاب المشاريع</h2>
-  <div class="reveal mt-10 divide-y divide-line rounded-3xl border border-line bg-white" id="faqList">
-    <div class="faq-item" data-open="false">
-      <h3><button class="flex w-full items-center justify-between gap-4 p-6 text-start text-lg font-semibold" aria-expanded="false">
-        هل أحتاج إلى خبرة تقنية لاستخدام مِرساة؟
-        <span class="faq-icon text-2xl text-brand" aria-hidden="true">+</span></button></h3>
-      <div class="faq-body"><div><p class="px-6 pb-6 leading-8 text-ink/70">لا. الواجهة بسيطة، وتستطيع إنشاء مشروعك الأول خلال دقائق دون أي إعدادات معقّدة.</p></div></div>
-    </div>
-    <div class="faq-item" data-open="false">
-      <h3><button class="flex w-full items-center justify-between gap-4 p-6 text-start text-lg font-semibold" aria-expanded="false">
-        هل توجد فترة تجريبية؟
-        <span class="faq-icon text-2xl text-brand" aria-hidden="true">+</span></button></h3>
-      <div class="faq-body"><div><p class="px-6 pb-6 leading-8 text-ink/70">نعم، تحصل على 14 يومًا مجانية لتجربة جميع مزايا الباقة التي تختارها.</p></div></div>
-    </div>
-    <div class="faq-item" data-open="false">
-      <h3><button class="flex w-full items-center justify-between gap-4 p-6 text-start text-lg font-semibold" aria-expanded="false">
-        هل أستطيع تغيير الباقة لاحقًا؟
-        <span class="faq-icon text-2xl text-brand" aria-hidden="true">+</span></button></h3>
-      <div class="faq-body"><div><p class="px-6 pb-6 leading-8 text-ink/70">بالتأكيد. يمكنك الترقية أو التخفيض في أي وقت، ويُحتسب الفرق على الشهر التالي.</p></div></div>
-    </div>
-    <div class="faq-item" data-open="false">
-      <h3><button class="flex w-full items-center justify-between gap-4 p-6 text-start text-lg font-semibold" aria-expanded="false">
-        هل بياناتي ومشاريعي في أمان؟
-        <span class="faq-icon text-2xl text-brand" aria-hidden="true">+</span></button></h3>
-      <div class="faq-body"><div><p class="px-6 pb-6 leading-8 text-ink/70">نعم. بياناتك خاصة بك ولا يطّلع عليها أحد غير من تمنحه الصلاحية داخل فريقك.</p></div></div>
-    </div>
-    <div class="faq-item" data-open="false">
-      <h3><button class="flex w-full items-center justify-between gap-4 p-6 text-start text-lg font-semibold" aria-expanded="false">
-        كيف أحصل على الدعم؟
-        <span class="faq-icon text-2xl text-brand" aria-hidden="true">+</span></button></h3>
-      <div class="faq-body"><div><p class="px-6 pb-6 leading-8 text-ink/70">تواصل معنا عبر واتساب أو البريد، ونرد عادةً خلال ساعات العمل في نفس اليوم.</p></div></div>
+    <div class="faq">
+      <div class="faq__item"><h3>هل أحتاج خبرة تقنية لاستخدام مِرساة؟</h3><p>لا. الواجهة بسيطة، وتنشئ مشروعك الأول خلال دقائق دون أي إعدادات معقّدة.</p></div>
+      <div class="faq__item"><h3>هل توجد فترة تجريبية؟</h3><p>نعم، 14 يومًا مجانًا تجرّب فيها كل مزايا الباقة التي تختارها، بدون بطاقة ائتمانية.</p></div>
+      <div class="faq__item"><h3>هل أقدر أغيّر الباقة لاحقًا؟</h3><p>نعم. ترقّي أو تخفّض في أي وقت، ويُحتسب الفرق على الشهر التالي.</p></div>
+      <div class="faq__item"><h3>هل بياناتي ومشاريعي في أمان؟</h3><p>بياناتك خاصة بك، ولا يطّلع عليها إلا من تمنحه الصلاحية داخل فريقك.</p></div>
+      <div class="faq__item"><h3>كيف أحصل على الدعم؟</h3><p>تواصل معنا عبر واتساب أو البريد، ونرد عادةً في نفس اليوم خلال ساعات العمل.</p></div>
     </div>
   </div>
 </section>
 
 </main>
 
-<!-- Footer -->
-<footer class="bg-ink text-white/80">
-  <div class="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-3">
-    <div>
-      <p class="text-xl font-bold text-white">مِرساة <span class="text-sm font-medium text-white/50" dir="ltr">Mirsat</span></p>
-      <p class="mt-3 max-w-xs leading-8">أدوات واضحة لتنظيم المهام والعروض ومتابعة التقدّم.</p>
+<footer class="closing" id="contact">
+    <div class="wrap">
+      <div class="closing__cta">
+      <div class="close-row">
+        <div>
+          <h2>رتّب مشاريعك في مِرساة من اليوم</h2>
+          <p>14 يومًا مجانًا بدون بطاقة ائتمانية.</p>
+        </div>
+        <a class="btn btn--primary" href="https://wa.me/966500000000" data-wa="trial">ابدأ تجربتك المجانية</a>
+      </div>
+      <p class="close-name" aria-hidden="true">مِرساة</p>
+      </div>
+      <div class="foot footer">
+        <p class="foot__about">مِرساة: مهام وعروض أسعار ومتابعة تقدّم للمشاريع الصغيرة.</p>
+        <div class="foot__col">
+          <h3>الصفحة</h3>
+          <ul>
+            <li><a href="#features">المزايا</a></li>
+            <li><a href="#pricing">الباقات</a></li>
+            <li><a href="#how">البداية</a></li>
+            <li><a href="#faq">الأسئلة</a></li>
+          </ul>
+        </div>
+        <div class="foot__col">
+          <h3>تواصل</h3>
+          <ul>
+            <li><a href="https://wa.me/966500000000" data-wa="help">واتساب</a></li>
+            <li><a href="mailto:hello@mirsat.example">البريد</a></li>
+          </ul>
+        </div>
+        <div class="legal">
+          <span>© <span data-year>2026</span> مِرساة · تصميم وتطوير: كود لايت | CodeLite</span>
+          <span>واتساب وPDF علامات تجارية لأصحابها.</span>
+        </div>
+      </div>
     </div>
-    <div>
-      <p class="font-semibold text-white">روابط سريعة</p>
-      <ul class="mt-3 space-y-2">
-        <li><a class="hover:text-white" href="#features">المزايا</a></li>
-        <li><a class="hover:text-white" href="#how">كيف يعمل</a></li>
-        <li><a class="hover:text-white" href="#pricing">الباقات</a></li>
-        <li><a class="hover:text-white" href="#faq">الأسئلة الشائعة</a></li>
-      </ul>
-    </div>
-    <div>
-      <p class="font-semibold text-white">تواصل معنا</p>
-      <ul class="mt-3 space-y-2">
-        <li><button class="wa hover:text-white" data-plan="">واتساب مباشر</button></li>
-        <li dir="ltr" class="text-end">hello@mirsat.example</li>
-      </ul>
-    </div>
-  </div>
-  <div class="border-t border-white/10 py-5 text-center text-sm text-white/60">تصميم وتطوير: كود لايت | CodeLite</div>
 </footer>
 
-<!-- Contact / preview modal -->
-<dialog id="modal" class="m-auto w-[92%] max-w-md rounded-3xl p-0 text-ink shadow-2xl" aria-labelledby="modalTitle">
-  <div class="p-7">
-    <div class="flex items-start justify-between gap-4">
-      <h2 id="modalTitle" class="text-2xl font-bold">اطلب نسختك من مِرساة</h2>
-      <button id="closeModal" class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line text-xl" aria-label="إغلاق">×</button>
-    </div>
-    <p class="mt-3 leading-8 text-ink/70">اكتب اسمك وسنجهّز لك نسخة تجريبية. هذه نافذة عرض فقط ولا تُرسل بياناتك لأي جهة.</p>
-    <form id="demoForm" class="mt-5 space-y-4">
-      <label class="block text-sm font-semibold">الاسم
-        <input id="nameInput" type="text" required placeholder="مثال: سارة" class="mt-1.5 w-full rounded-xl border border-line px-4 py-3 font-normal focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30">
-      </label>
-      <button type="submit" class="btn w-full rounded-xl bg-brand px-5 py-3 font-semibold text-white hover:bg-brand2">أرسل الطلب</button>
-    </form>
-    <p id="formDone" class="mt-4 hidden rounded-xl bg-mint/15 p-4 text-center font-semibold text-teal-800" role="status"></p>
-  </div>
-</dialog>
-
-<script>
-(function () {
-  var WA_NUMBER = '966500000000'; // استبدله برقم واتساب العميل بالصيغة الدولية بدون +
-
-  // loaded flag drives hero bars
-  requestAnimationFrame(function () { document.body.classList.add('loaded'); });
-
-  // Mobile menu
-  var menuBtn = document.getElementById('menuBtn'), menu = document.getElementById('mobileMenu');
-  menuBtn.addEventListener('click', function () {
-    var open = menu.classList.toggle('hidden') === false;
-    menuBtn.setAttribute('aria-expanded', String(open));
-  });
-  menu.querySelectorAll('a').forEach(function (a) {
-    a.addEventListener('click', function () { menu.classList.add('hidden'); menuBtn.setAttribute('aria-expanded', 'false'); });
-  });
-
-  // Scroll reveal
-  var items = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-    }, { threshold: 0.12 });
-    items.forEach(function (el) { io.observe(el); });
-  } else { items.forEach(function (el) { el.classList.add('in'); }); }
-
-  // FAQ accordion
-  document.querySelectorAll('.faq-item button').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var item = btn.closest('.faq-item'), open = item.dataset.open !== 'true';
-      document.querySelectorAll('.faq-item').forEach(function (i) {
-        i.dataset.open = 'false'; i.querySelector('button').setAttribute('aria-expanded', 'false');
-      });
-      item.dataset.open = String(open);
-      btn.setAttribute('aria-expanded', String(open));
-    });
-  });
-
-  // Modal
-  var modal = document.getElementById('modal'), form = document.getElementById('demoForm'), done = document.getElementById('formDone');
-  function openModal() { form.classList.remove('hidden'); done.classList.add('hidden'); form.reset(); modal.showModal(); }
-  document.querySelectorAll('[data-open-modal]').forEach(function (b) { b.addEventListener('click', openModal); });
-  document.getElementById('closeModal').addEventListener('click', function () { modal.close(); });
-  modal.addEventListener('click', function (e) { if (e.target === modal) modal.close(); });
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var name = document.getElementById('nameInput').value.trim();
-    done.textContent = 'شكرًا ' + name + '، تم تسجيل طلبك التجريبي.';
-    form.classList.add('hidden'); done.classList.remove('hidden');
-  });
-
-  // WhatsApp buttons
-  document.querySelectorAll('.wa').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var plan = b.dataset.plan;
-      var msg = plan ? 'مرحبًا، أرغب في الاشتراك في باقة مِرساة ' + plan + '.' : 'مرحبًا، أودّ الاستفسار عن مِرساة.';
-      window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
-    });
-  });
-})();
-</script>
+<script src="assets/site.js" defer></script>
+<script type="module" src="assets/motion/motion.js"></script>
+<script type="module" src="assets/moments/moments.js"></script>
 </body>
 </html>
